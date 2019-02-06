@@ -1,24 +1,28 @@
-import led
-import counter
+# import led
+# import counter
 
-from counter import Direction
-from counter import Counter
-from random import randint
+# from counter import Direction
+# from counter import Counter
+# from random import randint
 import datetime
 import RPi.GPIO as GPIO
 import time
+from led import Counter, Direction
 
 c = Counter()
-
+cont = Controller()
 def buttonpress(channel):
-    led.reset()
-    c.increment(Direction.UP)
-    for idx, item in enumerate(c.toBin()):
-        if item:
-            led.setLed(idx, item)
+    # led.reset()
+    if channel == 18: # Button
+        c.count(Direction.UP)
+        # c.increment(Direction.UP)
+        # for idx, item in enumerate(c.toBin()):
+        #     if item:
+        #         led.setLed(idx, item)
 
-    print(str(c))
 
+def turn(channel):
+    pass
     # if GPIO.input(23)==0:
     #     GPIO.output(23, GPIO.HIGH)
     # elif GPIO.input(23)==1:
@@ -27,7 +31,7 @@ def buttonpress(channel):
 GPIO.add_event_detect(18, GPIO.FALLING, callback=buttonpress,
 bouncetime=200)
 
-
+#GPIO.add_event_detect(14, GPIO., callback=turn)
 
 try:
     while True:
