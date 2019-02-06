@@ -13,7 +13,7 @@ class LedBlock:
         for pin in self.LED:
             GPIO.output(pin, GPIO.LOW)
 
-    def setLed(index, high):
+    def setLed(self, index, high):
         print(index)
         GPIO.output(self.LED[index], GPIO.HIGH if high else GPIO.LOW)
 
@@ -24,6 +24,7 @@ class Direction:
 class Counter:
     __current_value__ = 0
     leds = LedBlock([25, 8, 7, 1])
+
     def count(self, dir):
         self.__current_value__ += dir
         if self.__current_value__ > 15:
@@ -31,11 +32,13 @@ class Counter:
         elif self.__current_value__ < 0:
             self.__current_value__ = 15
         self.leds.reset()
-        for id, item in enumerate(self.toBin()):
-            print(item)
-            if item:
-                self.leds.setLed(id, item[id])
+        for index, item in enumerate(self.toBin()):
+            self.leds.setLed(index, item)
         return self
+
+    def setValue(self, newVal):
+        if newVal > 0 and newVal < 15:
+            self.__current_value__ = newVal
 
     def toBin(self):
         return map(
