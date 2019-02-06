@@ -2,19 +2,20 @@ import RPi.GPIO as GPIO
 
 
 class LedBlock:
-    def __init(self, leds):
+    def __init__(self, leds):
         self.LED = leds
         GPIO.setmode(GPIO.BCM)
-        for pin in LED:
+        for pin in self.LED:
             GPIO.setup(pin, GPIO.OUT)
             GPIO.output(pin, GPIO.LOW)
 
-    def reset():
-        for pin in LED:
+    def reset(self):
+        for pin in self.LED:
             GPIO.output(pin, GPIO.LOW)
 
     def setLed(index, high):
-        GPIO.output(LED[index], GPIO.HIGH if high else GPIO.LOW)
+        print(index)
+        GPIO.output(self.LED[index], GPIO.HIGH if high else GPIO.LOW)
 
 class Direction:
     UP = 1
@@ -29,10 +30,11 @@ class Counter:
             self.__current_value__ = 0
         elif self.__current_value__ < 0:
             self.__current_value__ = 15
-        leds.reset()
+        self.leds.reset()
         for id, item in enumerate(self.toBin()):
+            print(item)
             if item:
-                led.setLed(id, item)
+                self.leds.setLed(id, item[id])
         return self
 
     def toBin(self):

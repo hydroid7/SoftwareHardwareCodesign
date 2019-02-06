@@ -1,51 +1,49 @@
-# import led
-# import counter
-
-# from counter import Direction
-# from counter import Counter
-# from random import randint
 import datetime
 import RPi.GPIO as GPIO
 import time
 from led import Counter, Direction
-
+from controller import Controller
 c = Counter()
-cont = Controller()
-def buttonpress(channel):
-    # led.reset()
-    if channel == 18: # Button
+
+# def rotaryChange(datapin):
+#     print("rotaryChange")
+#     c.count(Direction.UP)
+#
+# def buttonpress(channel):
+#     if channel == 18: # Button
+#         c.count(Direction.UP)
+#
+#
+# GPIO.setmode(GPIO.BCM)
+# ky040 = Controller(14, 15, 18, rotaryChange, buttonpress)
+print('Program start.')
+
+CLOCKPIN = 14
+DATAPIN = 15
+
+def rotaryChange(datapin):
+    print( "turned - " + str(datapin))
+    if datapin > 0:
         c.count(Direction.UP)
-        # c.increment(Direction.UP)
-        # for idx, item in enumerate(c.toBin()):
-        #     if item:
-        #         led.setLed(idx, item)
+    else:
+        c.count(Direction.DOWN)
 
+def buttonpress(channel):
+    print("press button")
+    c.count(Direction.UP)
 
-def turn(channel):
-    pass
-    # if GPIO.input(23)==0:
-    #     GPIO.output(23, GPIO.HIGH)
-    # elif GPIO.input(23)==1:
-    #     GPIO.output(23, GPIO.LOW)
+GPIO.setmode(GPIO.BCM)
+ky040 = Controller(CLOCKPIN, DATAPIN, 18, rotaryChange, buttonpress)
 
-GPIO.add_event_detect(18, GPIO.FALLING, callback=buttonpress,
-bouncetime=200)
+print( 'Launch switch monitor class.')
 
-#GPIO.add_event_detect(14, GPIO., callback=turn)
-
+ky040.start()
+print( 'Start program loop...')
 try:
     while True:
-        time.sleep(5)
-        #GPIO.output(23, 1)
-
-# Aufraeumarbeiten nachdem das Programm beendet wurde
-except KeyboardInterrupt:
-        GPIO.cleanup()
-
-# print(counter(30, Direction.UP))
-# print(counter(30, Direction.DOWN))
-# print(counter(0, Direction.DOWN))
-#
-#
-# print(toBin(10))
-# print(toBin(20))
+        time.sleep(10)
+finally:
+    print( 'Stopping GPIO monitoring...')
+    ky040.stop()
+    GPIO.cleanup()
+    print( 'Program ended.')
