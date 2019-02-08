@@ -1,35 +1,44 @@
-import RPi.GPIO as GPIO
 import time
-class Controller:
-
-    # CLOCKWISE = 0
-    # ANTICLOCKWISE = 1
+import RPi.GPIO as GPIO
+class Controller(object):
+    """
+    Interacts with the controller interface. Watches GPIOs for the turning button
+    and press.
+    """
     DEBOUNCE = 200
 
-    def __init__(self, clockPin, dataPin, buttonPin, rotaryCallback, buttonPressCallback):
+    def __init__(self, clock_pin, data_pin, button_pin, rotary_callback, button_press_callback):
         #persist values
-        self.clockPin = clockPin
-        self.dataPin = dataPin
-        self.rotaryCallback = rotaryCallback
-        self.buttonPressCallback = buttonPressCallback
-        self.buttonPin = buttonPin
+        self.__clock_pin__ = clock_pin
+        self.__data_pin__ = data_pin
+        self.__rotary_callback__ = rotary_callback
+        self.__button_press_callback__ = button_press_callback
+        self.__button_pin__ = button_pin
         #setup pins
-        GPIO.setup(clockPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(dataPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(buttonPin, GPIO.IN)
+        GPIO.setup(clock_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(data_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(button_pin, GPIO.IN)
 
     def start(self):
-        GPIO.add_event_detect(self.clockPin, GPIO.FALLING,
-            callback=self._clockCallback, bouncetime=self.DEBOUNCE)
-        GPIO.add_event_detect(self.buttonPin, GPIO.FALLING, callback=self.buttonPressCallback,
-        bouncetime=self.DEBOUNCE)
+        """
+        Set up the usage of GPIO pins. Finally it has to be closed.
+        """
+        GPIO.add_event_detect(self.__clock_pin__, GPIO.FALLING,
+                              callback=self._clock_callback,
+                              bouncetime=self.DEBOUNCE)
+        GPIO.add_event_detect(self.__button_pin__, GPIO.FALLING,
+                              callback=self.__button_press_callback__,
+                              bouncetime=self.DEBOUNCE)
+        return self
 
     def stop(self):
-        GPIO.remove_event_detect(self.clockPin)
-        GPIO.remove_event_detect(self.buttonPin)
+        GPIO.remove_event_detect(self.__clock_pin__)
+        GPIO.remove_event_detect(self.__button_pin__)
+        GPIO.cleanup()
+        return self
 
-    def _clockCallback(self, pin):
-        self.rotaryCallback(GPIO.input(self.dataPin))
+    def _clock_callback(self, pin):
+        self.__rotary_callback__(GPIO.input(self.__data_pin__))
 
 #test
 if __name__ == "__main__":
