@@ -21,7 +21,7 @@ while True:
         WRITER = csv.writer(writeFile)
         WRITER.writerow(current_line)
         print("Row written...")
-    time.sleep(4)
+    time.sleep(3)
 
 def set_value(node, new_val):
     """
