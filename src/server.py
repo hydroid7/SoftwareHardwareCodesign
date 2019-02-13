@@ -1,16 +1,17 @@
 import time
 from opcua import Server
+from led import CurrentState
 
 class LedServer(object):
     """
     Creates an OPCUA Server. This server can be notified about changes
     calling the `notify` method.
     """
-    def __init__(self, url, name):
+    def __init__(self, url, name, led_block):
+        self.led_block = led_block
         self.server = Server()
         self.server.set_endpoint(url)
         addspace = self.server.register_namespace(name)
-
         node = self.server.get_objects_node()
 
         param = node.add_object(addspace, "Parameters")
@@ -46,6 +47,11 @@ class LedServer(object):
         try:
             print("Server started...")
             while True:
-                time.sleep(10)
+                values = list(map(lambda x: x.get_value(),self.leds))
+                self.led_block.set_state(CurrentState(values[0], values[1], values[2], values[3]))
+                print(str(values))
+                time.sleep(5)
+
+
         finally:
             self.server.stop()

@@ -26,6 +26,12 @@ class LedBlock(object):
         """
         GPIO.output(self.led[index], GPIO.HIGH if high else GPIO.LOW)
 
+    def set_state(self, state_tuple):
+        self.set_led(0, state_tuple[0])
+        self.set_led(1, state_tuple[1])
+        self.set_led(2, state_tuple[2])
+        self.set_led(3, state_tuple[3])
+
 class Direction(object):
     UP = 1
     DOWN = -1
@@ -63,6 +69,12 @@ class Counter(object):
         """
         if new_val > self.__low__ and new_val < self.__high__:
             self.__current_value__ = new_val
+
+    def set_value_from_state(self, state):
+        """
+        Sets the value of the counter based on the state object.
+        """
+        self.set_value(state[0] + 2 * state[1] + 4 * state[2] + 8 * state[3])
 
     def to_int_array(self):
         return list(map(

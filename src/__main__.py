@@ -4,10 +4,9 @@ import time
 from led import Counter, Direction, LedBlock
 from controller import Controller
 from server import LedServer
-
-
-COUNTER = Counter(LedBlock([25, 8, 7, 1]))
-SERVER = LedServer("opc.tcp://10.20.50.102:4840/", "Team2")
+LED_BLOCK = LedBlock([25, 8, 7, 1])
+COUNTER = Counter(LED_BLOCK)
+SERVER = LedServer("opc.tcp://10.20.50.102:4840/", "Team2", LED_BLOCK)
 print('Program start.')
 
 CLOCKPIN = 14
